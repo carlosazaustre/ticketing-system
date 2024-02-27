@@ -1,4 +1,5 @@
 import express from 'express';
+import ticketsRoutes from './routes/ticketsRoutes.js';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -9,21 +10,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.get('/tickets', (req, res) => {
-    res.send('All Tickets');
-});
-app.post('/tickets', (req, res) => {
-    res.send('New Ticket');
-});
-app.get('/tickets/:id', (req, res) => {
-    res.send('Ticket ' + req.params.id);
-});
-app.put('/tickets/:id', (req, res) => {
-    res.send('Update Ticket ' + req.params.id);
-});
-app.delete('/tickets/:id', (req, res) => {
-    res.send('Delete Ticket ' + req.params.id);
-});
+app.use('/api/tickets', ticketsRoutes);
 
 app.listen(port, () => {
     console.log(`🚀 Server is running on port ${port}`);
