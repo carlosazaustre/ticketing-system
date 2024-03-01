@@ -2,43 +2,25 @@ import express from 'express';
 import Ticket from '../models/Ticket.js';
 import auth from '../middlewares/auth.js';
 import admin from '../middlewares/admin.js';
+import paginate from '../middlewares/pagination.js';
+import buildFilter from '../middlewares/filter.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
-    const pageSize = parseInt(req.query.pageSize) || 10;
-    const page = parseInt(req.query.page) || 1;
-    const status = req.query.status || '';
-    const priority = req.query.priority || '';
-
-    let filter = {};
-
-    if (status) {
-        filter.status = status;
-    }
-    if (priority) {
-        filter.priority = priority;
-    }
-
-    try {
-        const tickets = await Ticket
-            .find(filter)
-            .skip((page - 1) * pageSize)
-            .limit(pageSize);
-        
-        const total = await Ticket.countDocuments();    
-        
-        res.status(200).send({
-            tickets,
-            page,
-            pages: Math.ceil(total / pageSize),
-            currentPage: page,
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+// Get all tickets
+// GET /api/tickets
+// GET /api/tickets?pageSize=10&page=1
+// GET /api/tickets?status=open&priority=high
+// GET /api/tickets?search=bug
+// Public
+router.get('/', buildFilter, paginate(Ticket), (req, res) => {
+    res.status(200).send(req.paginatedResults);
 });
 
+// Create a ticket
+// POST /api/tickets
+// Private (only logged in users can create tickets)
+// Ticket Schema: user, title, description, priority, status
 router.post('/', auth, async (req, res) => {
     const ticket = new Ticket({
         user: req.user._id,
@@ -57,6 +39,9 @@ router.post('/', auth, async (req, res) => {
     }
 });
 
+// Get a ticket by id
+// GET /api/tickets/:id
+// Public
 router.get('/:id', async (req, res) => {
     try {
         const ticket = await Ticket.findById(req.params.id);
@@ -70,6 +55,10 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Update a ticket by id
+// PUT /api/tickets/:id
+// Private (only logged in users can update tickets)
+// Ticket Schema: user, title, description, priority, status
 router.put('/:id', auth, async (req, res) => {
     const updates = req.body;
     try {
@@ -84,6 +73,9 @@ router.put('/:id', auth, async (req, res) => {
     }
 });
 
+// Delete a ticket by id
+// DELETE /api/tickets/:id
+// Private (only admin users can delete tickets)
 router.delete('/:id', [auth, admin], async (req, res) => {
     try {
         const ticket = await Ticket.findByIdAndDelete(req.params.id);

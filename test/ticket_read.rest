@@ -1,0 +1,14 @@
+# All Tickets
+# GET http://localhost:3000/api/tickets HTTP/1.1
+
+# Pagination
+# GET http://localhost:3000/api/tickets?pageSize=5&page=2 HTTP/1.1
+
+# Filter by Status "closed"
+# GET http://localhost:3000/api/tickets?status=closed HTTP/1.1
+
+# Filter by Priority "high"
+# GET http://localhost:3000/api/tickets?priority=high HTTP/1.1
+
+# Search Terms
+GET http://localhost:3000/api/tickets?search=ticket%2010 HTTP/1.1
