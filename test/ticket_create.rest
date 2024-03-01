@@ -1,0 +1,9 @@
+POST http://localhost:3000/api/tickets HTTP/1.1
+Content-Type: application/json
+
+{
+  "user": "65e0c4ae25cd5ff8137484db",
+  "title": "Ticket 1",
+  "description": "This is a ticket",
+  "status": "open"
+}
