@@ -35,10 +35,11 @@ describe('Tickets API', () => {
             .post('/api/tickets')
             .set('Authorization', `Bearer ${token}`)
             .send({
+                user: '65e0c4ae25cd5ff8137484db',
                 title: 'Test Ticket',
                 description: 'This is a test ticket',
                 priority: 'high',
-                status: 'open',
+                status: 'open'
             });
 
         expect(response.status).toBe(201);
