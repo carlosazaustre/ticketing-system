@@ -4,13 +4,17 @@ import mongoose from 'mongoose';
 import usersRoutes from './routes/usersRoutes.js';
 import ticketsRoutes from './routes/ticketsRoutes.js';
 import error from './middlewares/error.js';
+import 'dotenv/config'
 
 const app = express();
 const port = process.env.PORT || 3000;
-const DB_URL = process.env.DB_URL
 
-mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('💾 Connected to MongoDB'))
+const DB_URL = process.env.NODE_ENV === 'test'
+    ? 'mongodb://localhost:27017/ticketingSystem-test'
+    : process.env.DB_URL || 'mongodb://localhost:27017/ticketingSystem';
+
+mongoose.connect(DB_URL)
+    .then(() => console.log(`💾 Connected to MongoDB (${DB_URL})`))
     .catch(err => console.error('❌ Failed to connect to MongoDB', err));
 
 app.use(morgan('dev'));
@@ -20,6 +24,4 @@ app.use('/api/users', usersRoutes);
 app.use('/api/tickets', ticketsRoutes);
 app.use(error);
 
-app.listen(port, () => {
-    console.log(`🚀 Server is running on port ${port}`);
-});
+export default app;
