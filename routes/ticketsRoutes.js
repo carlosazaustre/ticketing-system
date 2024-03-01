@@ -16,6 +16,7 @@ router.post('/', auth, async (req, res) => {
 
     try {
         const newTicket = await ticket.save();
+
         res.status(201).json(newTicket);
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -23,9 +24,23 @@ router.post('/', auth, async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const page = parseInt(req.query.page) || 1;
+
     try {
-        const tickets = await Ticket.find();
-        res.status(200).send(tickets);
+        const tickets = await Ticket
+            .find()
+            .skip((page - 1) * pageSize)
+            .limit(pageSize);
+        
+        const total = await Ticket.countDocuments();    
+        
+        res.status(200).send({
+            tickets,
+            page,
+            pages: Math.ceil(total / pageSize),
+            currentPage: page,
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -34,7 +49,10 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const ticket = await Ticket.findById(req.params.id);
-        if (!ticket) return res.status(404).send('Ticket not found.');
+        if (!ticket) {
+            return res.status(404).send('Ticket not found.');
+        }
+        
         res.status(200).send(ticket);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -45,7 +63,10 @@ router.put('/:id', auth, async (req, res) => {
     const updates = req.body;
     try {
         const ticket = await Ticket.findByIdAndUpdate(req.params.id, updates, { new: true });
-        if (!ticket) return res.status(404).send('Ticket not found.');
+        if (!ticket) {
+            return res.status(404).send('Ticket not found.');
+        }
+        
         res.status(200).send(ticket);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -55,7 +76,10 @@ router.put('/:id', auth, async (req, res) => {
 router.delete('/:id', [auth, admin], async (req, res) => {
     try {
         const ticket = await Ticket.findByIdAndDelete(req.params.id);
-        if (!ticket) return res.status(404).send('Ticket not found.');
+        if (!ticket) {
+            return res.status(404).send('Ticket not found.');
+        }
+
         res.status(204).send(ticket);
     } catch (err) {
         res.status(500).json({ message: err.message });

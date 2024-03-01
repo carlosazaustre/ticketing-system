@@ -3,8 +3,9 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWUwYzRhZTI1Y2Q1ZmY4MTM3NDg0ZGIiLCJyb2xlIjoidXNlciIsImlhdCI6MTcwOTI5MDQ0M30.xdsoNskOUiisvy6MA-Vvk37igHHjoYODTvCg79FKdtM
 
 {
-  "title": "Ticket 1",
+  "title": "Ticket 13",
   "description": "This is a ticket",
-  "status": "open"
+  "status": "open",
+  "priority": "medium"
 }
 
