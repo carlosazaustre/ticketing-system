@@ -1,5 +1,8 @@
+# Production
+GET https://ticketing-system-production-b37b.up.railway.app/api/tickets HTTP/1.1
+
 # All Tickets
-GET http://localhost:3000/api/tickets HTTP/1.1
+# GET http://localhost:3000/api/tickets HTTP/1.1
 
 # Pagination
 # GET http://localhost:3000/api/tickets?pageSize=5&page=2 HTTP/1.1

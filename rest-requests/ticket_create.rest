@@ -11,12 +11,24 @@
 # }
 
 # invalid 
-POST http://localhost:3000/api/tickets HTTP/1.1
+# POST http://localhost:3000/api/tickets HTTP/1.1
+# Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWUwYzRhZTI1Y2Q1ZmY4MTM3NDg0ZGIiLCJyb2xlIjoidXNlciIsImlhdCI6MTcwOTI5MDQ0M30.xdsoNskOUiisvy6MA-Vvk37igHHjoYODTvCg79FKdtM
+
+# {
+#   "title": "a",
+#   "description": "This is a ticket",
+#   "status": "high"
+# }
+
+# production
+POST https://ticketing-system-production-b37b.up.railway.app/api/tickets HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWUwYzRhZTI1Y2Q1ZmY4MTM3NDg0ZGIiLCJyb2xlIjoidXNlciIsImlhdCI6MTcwOTI5MDQ0M30.xdsoNskOUiisvy6MA-Vvk37igHHjoYODTvCg79FKdtM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWUyNGJkNjZlYTdiNDZkYjJhOGE5NDQiLCJyb2xlIjoidXNlciIsImlhdCI6MTcwOTMyOTM2NywiZXhwIjoxNzA5MzMyOTY3fQ.RDjgsuuoBpZcbXCVic5sArTt9fuPgM_OmwRBLyzKyJM
 
 {
-  "title": "a",
+  "title": "Ticket 777",
   "description": "This is a ticket",
-  "status": "high"
+  "status": "open",
+  "priority": "medium"
 }
