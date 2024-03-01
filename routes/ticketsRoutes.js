@@ -5,6 +5,40 @@ import admin from '../middlewares/admin.js';
 
 const router = express.Router();
 
+router.get('/', async (req, res) => {
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const page = parseInt(req.query.page) || 1;
+    const status = req.query.status || '';
+    const priority = req.query.priority || '';
+
+    let filter = {};
+
+    if (status) {
+        filter.status = status;
+    }
+    if (priority) {
+        filter.priority = priority;
+    }
+
+    try {
+        const tickets = await Ticket
+            .find(filter)
+            .skip((page - 1) * pageSize)
+            .limit(pageSize);
+        
+        const total = await Ticket.countDocuments();    
+        
+        res.status(200).send({
+            tickets,
+            page,
+            pages: Math.ceil(total / pageSize),
+            currentPage: page,
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 router.post('/', auth, async (req, res) => {
     const ticket = new Ticket({
         user: req.user._id,
@@ -20,29 +54,6 @@ router.post('/', auth, async (req, res) => {
         res.status(201).json(newTicket);
     } catch (err) {
         res.status(400).json({ message: err.message });
-    }
-});
-
-router.get('/', async (req, res) => {
-    const pageSize = parseInt(req.query.pageSize) || 10;
-    const page = parseInt(req.query.page) || 1;
-
-    try {
-        const tickets = await Ticket
-            .find()
-            .skip((page - 1) * pageSize)
-            .limit(pageSize);
-        
-        const total = await Ticket.countDocuments();    
-        
-        res.status(200).send({
-            tickets,
-            page,
-            pages: Math.ceil(total / pageSize),
-            currentPage: page,
-        });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
     }
 });
 

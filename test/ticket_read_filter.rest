@@ -1,0 +1,2 @@
+# GET http://localhost:3000/api/tickets?status=closed HTTP/1.1
+GET http://localhost:3000/api/tickets?priority=high HTTP/1.1
