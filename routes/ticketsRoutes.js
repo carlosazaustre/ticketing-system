@@ -1,12 +1,13 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import Ticket from '../models/Ticket.js';
+import auth from '../middlewares/auth.js';
+import admin from '../middlewares/admin.js';
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const ticket = new Ticket({
-        user: req.body.userId,
+        user: req.user._id,
         title: req.body.title,
         description: req.body.description,
         priority: req.body.priority,
@@ -40,10 +41,10 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', auth, async (req, res) => {
     const updates = req.body;
     try {
-        const ticket = Ticket.findByIdAndUpdate(req.params.id, updates, { new: true });
+        const ticket = await Ticket.findByIdAndUpdate(req.params.id, updates, { new: true });
         if (!ticket) return res.status(404).send('Ticket not found.');
         res.status(200).send(ticket);
     } catch (err) {
@@ -51,9 +52,9 @@ router.put('/:id', (req, res) => {
     }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
     try {
-        const ticket = Ticket.findByIdAndDelete(req.params.id);
+        const ticket = await Ticket.findByIdAndDelete(req.params.id);
         if (!ticket) return res.status(404).send('Ticket not found.');
         res.status(204).send(ticket);
     } catch (err) {
