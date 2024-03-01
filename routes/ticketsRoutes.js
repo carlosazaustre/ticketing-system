@@ -1,5 +1,6 @@
 import express from 'express';
 import Ticket from '../models/Ticket.js';
+import ticketSchema from '../validations/ticketValidation.js';
 import auth from '../middlewares/auth.js';
 import admin from '../middlewares/admin.js';
 import paginate from '../middlewares/pagination.js';
@@ -22,6 +23,11 @@ router.get('/', buildFilter, paginate(Ticket), (req, res) => {
 // Private (only logged in users can create tickets)
 // Ticket Schema: user, title, description, priority, status
 router.post('/', auth, async (req, res) => {
+    const { error } = ticketSchema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+    
     const ticket = new Ticket({
         user: req.user._id,
         title: req.body.title,
