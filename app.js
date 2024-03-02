@@ -22,9 +22,11 @@ mongoose.connect(DB_URL)
 
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(rateLimit)
 app.use(cors());
-app.use(compression());
+if (process.env.NODE_ENV === 'prod') {
+    app.use(rateLimit)
+    app.use(compression());
+}
 app.use(express.json());
 
 app.use('/api/users', usersRoutes);

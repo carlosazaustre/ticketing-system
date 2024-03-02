@@ -50,7 +50,7 @@ router.post('/', auth, async (req, res) => {
 // Public
 router.get('/:id', async (req, res) => {
     try {
-        const ticket = await Ticket.findById(req.params.id);
+        const ticket = await Ticket.findOne({ id: req.params.id });
         if (!ticket) {
             return res.status(404).send('Ticket not found.');
         }
@@ -68,7 +68,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', auth, async (req, res) => {
     const updates = req.body;
     try {
-        const ticket = await Ticket.findByIdAndUpdate(req.params.id, updates, { new: true });
+        const ticket = await Ticket.findOneAndUpdate({ id: req.params.id } , updates, { new: true });
         if (!ticket) {
             return res.status(404).send('Ticket not found.');
         }
@@ -84,7 +84,7 @@ router.put('/:id', auth, async (req, res) => {
 // Private (only admin users can delete tickets)
 router.delete('/:id', [auth, admin], async (req, res) => {
     try {
-        const ticket = await Ticket.findByIdAndDelete(req.params.id);
+        const ticket = await Ticket.findOneAndDelete({ id: req.params.id });
         if (!ticket) {
             return res.status(404).send('Ticket not found.');
         }
